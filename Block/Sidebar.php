@@ -4,6 +4,7 @@ use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\ResourceModel\Category\Collection;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Catalog\Model\ResourceModel\Product;
+use Magento\Framework\Data\Tree\Node;
 use Magento\Framework\View\Element\Template;
 
 /**
@@ -155,20 +156,20 @@ class Sidebar extends Template
     }
 
     /**
-     * @param        $category
+     * @param Category | Node $category
      * @param string $html
      * @param int    $level
      *
      * @return string
      */
-    public function getChildCategoryView(Category $category, $html = '', $level = 1)
+    public function getChildCategoryView($category, $html = '', $level = 1)
     {
         // Check if category has children
         if ($category->hasChildren()) {
 
             $childCategories = $this->getSubcategories($category);
 
-            if (count($childCategories) > 0) {
+            if ($childCategories && count($childCategories) > 0) {
 
                 $html .= '<ul class="o-list o-list--unstyled">';
 
@@ -205,12 +206,12 @@ class Sidebar extends Template
      * Retrieve subcategories
      * DEPRECATED
      *
-     * @param $category
+     * @param Category | Node $category
      *
      * @return array|Collection|Category[]
      */
 
-    public function getSubcategories(Category $category)
+    public function getSubcategories($category)
     {
         if ($this->categoryFlatConfig->isFlatEnabled() && $category->getUseFlatResource()) {
             return (array)$category->getChildrenNodes();
@@ -222,10 +223,10 @@ class Sidebar extends Template
     /**
      * Get current category
      *
-     * @param Category $category
+     * @param Category | Node $category
      *
      */
-    public function isActive(Category $category): bool
+    public function isActive($category): bool
     {
         $activeCategory = $this->_coreRegistry->registry('current_category');
         $activeProduct  = $this->_coreRegistry->registry('current_product');
@@ -260,11 +261,11 @@ class Sidebar extends Template
     /**
      * Return Category Id for $category object
      *
-     * @param $category
+     * @param Category | Node $category
      *
      * @return string
      */
-    public function getCategoryUrl(Category $category)
+    public function getCategoryUrl($category)
     {
         return $this->_categoryHelper->getCategoryUrl($category);
     }
